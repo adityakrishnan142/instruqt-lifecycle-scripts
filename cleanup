@@ -1,0 +1,4 @@
+#cd ~/terraform-azure-subscription-user-vending
+#terraform destroy -var="location=${location}" -var="billing_account_name=${billing_account_name}" -var="billing_profile_name=${billing_profile_name}" -var="invoice_section_name=${invoice_section_name}" -var="mg_id=${mg_id}" -var="workload_type=${workload_type}" -var="client_id=${client_id}" -var="client_secret=${client_secret}" -var="tenant_id=${tenant_id}" -var="subscription_id=${subscription_id}" -var="tenant_domain=${tenant_domain}" -var="user_role=${user_role}" -auto-approve
+terraform -chdir=illumio-terraform-template destroy -auto-approve
+az rest --method POST --url "https://management.azure.com/subscriptions/"${AZSUBSCRIPTION_NEW_SUBSCRIPTION_ID}"/providers/Microsoft.Subscription/cancel?IgnoreResourceCheck=true&api-version=2021-10-01"
