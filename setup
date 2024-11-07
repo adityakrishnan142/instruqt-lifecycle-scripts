@@ -1,0 +1,35 @@
+#!/bin/bash
+# Install prerequisites. You can speed up your boot time by baking these into 
+# a container or virtual machine image.
+apt -y update
+DEBIAN_FRONTEND=noninteractive apt -y install curl gnupg lsb-release git software-properties-common
+
+az login -u ${AZSUBSCRIPTION_NEW_USER_EMAIL} -p ${AZSUBSCRIPTION_NEW_USER_PASSWORD}
+
+# Download and install Terraform
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" -y
+apt -y install terraform
+
+# Copies the html file from the Git directory for displaying custom azure/aws creds
+git clone https://github.com/adityakrishnan142/Illumio-Instruqt-Expose-Creds
+cp Illumio-Instruqt-Expose-Creds/index.html.tmpl /opt/instruqt/index.html.tmpl
+gomplate -f /opt/instruqt/index.html.tmpl -o /var/www/html/index.html
+
+# Clone the illumio-terraform-template repo 
+git clone https://github.com/adityakrishnan142/illumio-terraform-template
+terraform -chdir=illumio-terraform-template init
+terraform -chdir=illumio-terraform-template apply -auto-approve
+#terraform init
+#terraform apply -auto-approve
+
+
+#git clone https://github.com/adityakrishnan142/terraform-azure-subscription-user-vending
+#cd terraform-azure-subscription-user-vending
+#terraform init
+#terraform apply -var="location=${location}" -var="billing_account_name=${billing_account_name}" -var="billing_profile_name=${billing_profile_name}" -var="invoice_section_name=${invoice_section_name}" -var="mg_id=${mg_id}" -var="workload_type=${workload_type}" -var="client_id=${client_id}" -var="client_secret=${client_secret}" -var="tenant_id=${tenant_id}" -var="subscription_id=${subscription_id}" -var="tenant_domain=${tenant_domain}" -var="user_role=${user_role}" -auto-approve
+
+
+#Terraform 
+#terraform init
+#terraform apply -auto-approve
